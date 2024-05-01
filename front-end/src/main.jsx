@@ -7,13 +7,15 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
+import { MyContextProvider } from './components/context';
 const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <MyContextProvider>
         <RouterProvider />
         <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      </MyContextProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 )

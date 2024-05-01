@@ -3,15 +3,27 @@ import {
     RouterProvider,
 } from "react-router-dom";
 
-// import Root from './Root';
-// import ErrorPage from "../pages/Error";
-import Login from '../pages/Login'
+import Root from '../components/Root';
+import ErrorPage from "../pages/Error";
+import Login from '../pages/Login';
+import Home from "../pages/Home";
 const router = createBrowserRouter([
     {
         path: "/",
+        element: <Root />,
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                path: "/Home",
+                element: <Home />,
+            },
+        ],
+    },
+    {
+        path: "/Login",
         element: <Login />,
     },
- 
+
 ]);
 
 const App = () => {

@@ -1,13 +1,22 @@
 import Image from "../../components/Image";
+import { AuthWithGoogle } from "../../components/auth/auth_google_signin_popup";
+import { POST } from "../../components/common";
+import { useMyContext } from "../../components/context";
+import Cookies from "js-cookie";
 
 export default function Login() {
+    const { login, setUserData } = useMyContext();
+    const handleLogin = async () => {
+        const { user } = await AuthWithGoogle();
+        const response = await POST('/Login')
+    }
     return (<>
         <div className="flex flex-col h-screen p-5">
             <div className='flex justify-between'>
                 <div className="text-3xl font-bold text-gray-500">Education</div>
                 <div className='flex gap-5'>
-                    <div className='cursor-pointer hover:bg-blue-600 border rounded py-3 text-white px-10 text-xl bg-blue-500'>Login</div>
-                    <div className='cursor-pointer hover:border-blue-400 border rounded py-3 text-blue-600 px-10 text-xl'>Sign-in</div>
+                    <div className='cursor-pointer hover:bg-blue-600 border rounded py-3 text-white px-10 text-xl bg-blue-500'
+                        onClick={() => handleLogin()}>Login with Google</div>
                 </div>
             </div>
             <div className="flex p-10 justify-around mt-10">
@@ -23,8 +32,9 @@ export default function Login() {
                     </div>
                     <div className="text-xl font-normal mt-10 text-gray-800">Classroom helps educators create engaging learning experiences they can personalize, manage, and measure. Part of Google Workspace for Education, it empowers educators to enhance their impact and prepare students for the future.</div>
                     <div className='flex gap-5 mt-10'>
-                        <div className='cursor-pointer hover:bg-blue-600 border rounded py-3 text-white px-10 text-xl bg-blue-500'>Login</div>
-                        <div className='cursor-pointer hover:border-blue-400 border rounded py-3 text-blue-600 px-10 text-xl'>Sign-in</div>
+                        <div className='cursor-pointer hover:bg-blue-600 border rounded py-3 text-white px-10 text-xl bg-blue-500'
+                            onClick={() => handleLogin()}
+                        >Login with Google</div>
                     </div>
                 </div>
                 <div className="w-[40%]">
