@@ -3,11 +3,11 @@ import Cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode'
 
 export const POST = async (url, conditions) => {
-    let headers = { "Content-Type": "multipart/form-data" };
+    let headers = { "Content-Type": "application/json" };
     const getTokeFromBrowser = Cookies.get('token_classroom');
     if (getTokeFromBrowser) {
         headers = {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
             Authorization: `Bearer ${getTokeFromBrowser}`,
         };
     }
@@ -44,11 +44,11 @@ export const getInfoFromToken = () => {
 }
 
 export const GET = async (url, conditions) => {
-    let headers = { "Content-Type": "multipart/form-data" };
+    let headers = { "Content-Type": "application/json" };
     const getTokeFromBrowser = Cookies.get('token_classroom');
     if (getTokeFromBrowser) {
         headers = {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
             Authorization: `Bearer ${getTokeFromBrowser}`,
         };
     }

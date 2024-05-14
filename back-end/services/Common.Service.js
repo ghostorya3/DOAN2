@@ -1,7 +1,8 @@
 const httpStatus = require("./HttpStatus.Service")
+const fs = require('fs');
 
 exports.handleResponse = (res, data) => {
-    switch (data.status) {
+    switch (data?.status) {
         case 200:
             return httpStatus.OK(res, data.message, data.data)
         case 400:
@@ -19,10 +20,29 @@ exports.handleResponse = (res, data) => {
     }
 };
 
-exports.ErrorServer = (error) => {
+exports.errorServer = (error) => {
     return {
         status: 500,
         message: error.message,
         result: false
+    }
+}
+
+exports.handleSaveFile = (folder, work, id, file, time) => {
+    const path = `code/${work}/${id}/${folder}`;
+    const filePath = `code/${work}/${id}/${folder}/${time}.${folder}`;
+
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path, { recursive: true });
+    }
+
+    fs.writeFile(filePath, file, (err) => {
+        if (err) {
+            return false
+        }
+    });
+    return {
+        path: `code/${work}/${id}/${folder}`,
+        fileCode: `${time}.${folder}`
     }
 }

@@ -15,7 +15,6 @@ export default function Home() {
                 <Class></Class>
                 <Class></Class>
                 <Class></Class>
-
             </div>
         </div>
     );

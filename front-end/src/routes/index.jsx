@@ -8,6 +8,7 @@ import ErrorPage from "../pages/Error";
 import Login from '../pages/Login';
 import Home from "../pages/Home";
 import Work from "../pages/Work";
+import Class from "../pages/Class";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
     {
         path: "/Home",
         element: <Home />,
+    },
+    {
+        path: "/Class",
+        element: <Class />,
     },
 ]);
 

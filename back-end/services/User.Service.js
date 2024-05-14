@@ -1,6 +1,6 @@
 const { UserModel } = require("../models/User.model");
 const { createToken } = require("./Auth.Service");
-const { ErrorServer } = require("./Common.Service")
+const { errorServer } = require("./Common.Service")
 
 exports.login = async (data) => {
     try {
@@ -49,6 +49,6 @@ exports.login = async (data) => {
         }
 
     } catch (error) {
-        return ErrorServer(error)
+        return errorServer(error)
     }
 }
