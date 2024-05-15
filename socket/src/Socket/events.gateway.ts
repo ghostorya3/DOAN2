@@ -54,7 +54,7 @@ export class EventsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   }
 
   handleSendResult(data: any) {
-    this.server.emit('serverSendResult', data);
+    this.server.to("22").emit('serverSendResult', data.result);
   }
 
 }

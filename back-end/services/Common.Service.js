@@ -1,22 +1,23 @@
 const httpStatus = require("./HttpStatus.Service")
 const fs = require('fs');
+const axios = require('axios');
 
 exports.handleResponse = (res, data) => {
     switch (data?.status) {
         case 200:
-            return httpStatus.OK(res, data.message, data.data)
+            return httpStatus.OK(res, data?.message, data?.data)
         case 400:
-            return httpStatus.BadRequestException(res, data.message)
+            return httpStatus.BadRequestException(res, data?.message)
         case 401:
             return httpStatus.Unauthorized(res)
         case 403:
             return httpStatus.Forbidden(res)
         case 404:
-            return httpStatus.NotFoundException(res, data.message)
+            return httpStatus.NotFoundException(res, data?.message)
         case 500:
-            return httpStatus.ErrorServerException(res, data.message)
+            return httpStatus.ErrorServerException(res, data?.message)
         case 409:
-            return httpStatus.ConflictException(res, data.message)
+            return httpStatus.ConflictException(res, data?.message)
     }
 };
 
@@ -45,4 +46,28 @@ exports.handleSaveFile = (folder, work, id, file, time) => {
         path: `code/${work}/${id}/${folder}`,
         fileCode: `${time}.${folder}`
     }
+}
+
+exports.sendResult = (result) => {
+    let data = JSON.stringify({
+        "result": result
+    });
+
+    let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: process.env.DOMAIN_SOCKET,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: data
+    };
+
+    axios.request(config)
+        .then((response) => {
+            console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 }

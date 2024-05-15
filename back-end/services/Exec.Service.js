@@ -1,4 +1,4 @@
-const { errorServer, handleSaveFile } = require("./Common.Service");
+const { errorServer, handleSaveFile, sendResult } = require("./Common.Service");
 const { exec } = require('child_process');
 
 exports.executeCode = async (data) => {
@@ -9,19 +9,17 @@ exports.executeCode = async (data) => {
 
         exec(`cd ${file.path} && ${command}`, (error, stdout, stderr) => {
             if (error) {
-                console.error(`Lỗi: ${error.message}`);
-                // Trả về lỗi cho client
-                return;
+                sendResult(error)
             }
             if (stderr) {
-                console.error(`Lỗi tiêu chuẩn: ${stderr}`);
-                // Trả về lỗi cho client
-                return;
+                sendResult(stderr)
             }
-            console.log(`Kết quả: ${stdout}`);
-            // Trả kết quả về cho client
+            sendResult(stdout)
         });
-
+        return {
+            status: 200,
+            message: 'success'
+        }
     } catch (error) {
         return errorServer(error);
     }
