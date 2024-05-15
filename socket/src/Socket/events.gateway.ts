@@ -54,7 +54,9 @@ export class EventsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   }
 
   handleSendResult(data: any) {
-    this.server.to("22").emit('serverSendResult', data.result);
+    const user = this.arrUserOnline.get(data.id);
+    console.log(data.result);
+    this.server.to(user).emit('serverSendResult', data.result);
   }
 
 }

@@ -49,8 +49,10 @@ exports.handleSaveFile = (folder, work, id, file, time) => {
 }
 
 exports.sendResult = (result) => {
+    console.log("🚀 ~ result:", result)
     let data = JSON.stringify({
-        "result": result
+        "result": result,
+        id: 20
     });
 
     let config = {

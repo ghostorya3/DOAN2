@@ -3,19 +3,33 @@ const { exec } = require('child_process');
 
 exports.executeCode = async (data) => {
     try {
+        data.code = data.code.replace(5, 'process.argv[2]');
         const file = await handleSaveFile(data.language, data.work, data.id, data.code, new Date().getTime());
 
-        const command = handleCommand(data.language, file.fileCode);
+        const work = {
+            test: [
+                { input: 4, output: 16 },
+                { input: 5, output: 25 },
+                { input: 6, output: 36 },
+                { input: 7, output: 49 },
+            ]
+        };
 
-        exec(`cd ${file.path} && ${command}`, (error, stdout, stderr) => {
-            if (error) {
-                sendResult(error)
-            }
-            if (stderr) {
-                sendResult(stderr)
-            }
-            sendResult(stdout)
-        });
+        const result = [];
+        for (let i = 0; i < work.test.length; i++) {
+            const element = work.test[i];
+            const command = handleCommand(data.language, file.fileCode, element.input);
+            exec(`cd ${file.path} && ${command}`, (error, stdout, stderr) => {
+                if (error) {
+                    result.push(error);
+                }
+                if (stderr) {
+                    result.push(stderr);
+                }
+                result.push(`test ${i + 1}${stdout == element.output ? ' success' : ' fail'}`);
+            });
+        }
+        sendResult(result)
         return {
             status: 200,
             message: 'success'
@@ -24,15 +38,15 @@ exports.executeCode = async (data) => {
         return errorServer(error);
     }
 }
-const handleCommand = (language, fileCode) => {
+const handleCommand = (language, fileCode, test) => {
     switch (language) {
         case 'js':
-            return `node ${fileCode}`;
+            return `node ${fileCode} ${test}`;
         case 'c++':
             return `g++ ${fileCode} -o main.exe && main.exe`;
         case 'python':
-            return `python ${fileCode}`;
+            return `python ${fileCode} `;
         case 'java':
-            return `javac ${fileCode} && java ${fileCode.replace('.java', '')}`;
+            return `javac ${fileCode} && java ${fileCode.replace('.java', '')} `;
     }
 }
