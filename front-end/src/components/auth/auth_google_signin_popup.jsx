@@ -11,19 +11,15 @@ const AuthWithGoogle = async () => {
   return signInWithPopup(auth, provider)
     .then((result) => {
       try {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-
-        const token = credential.accessToken;
-
         const user = result.user.providerData[0];
 
-        return { token, user };
+        return { user };
 
       } catch (error) {
-        return { token: null, user: null };
+        return { user: null };
       }
     }).catch((error) => {
-      return { token: null, user: null };
+      return { user: null };
     });
 };
 

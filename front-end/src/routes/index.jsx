@@ -15,28 +15,25 @@ const router = createBrowserRouter([
         element: <Root />,
         errorElement: <ErrorPage />,
         children: [
-            // {
-            //     path: "/Home",
-            //     element: <Home />,
-            // },
+            {
+                path: "/Work",
+                element: <Work />,
+            },
+            {
+                path: "/Home",
+                element: <Home />,
+            },
+            {
+                path: "/Class",
+                element: <Class />,
+            },
         ],
     },
     {
         path: "/Login",
         element: <Login />,
     },
-    {
-        path: "/Work",
-        element: <Work />,
-    },
-    {
-        path: "/Home",
-        element: <Home />,
-    },
-    {
-        path: "/Class",
-        element: <Class />,
-    },
+
 ]);
 
 const App = () => {

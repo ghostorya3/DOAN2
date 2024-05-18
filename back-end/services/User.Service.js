@@ -1,10 +1,14 @@
-const { UserModel } = require("../models/User.model");
+const User = require("../models/User.model");
 const { createToken } = require("./Auth.Service");
 const { errorServer } = require("./Common.Service")
 
 exports.login = async (data) => {
     try {
-        const { idGoogle, email, userName, avatar } = data;
+        const { uid, email, displayName, photoURL } = data;
+
+        const idGoogle = uid;
+        const userName = displayName;
+        const avatar = photoURL;
 
         if (!idGoogle || !email || !userName || !avatar) {
             return {
@@ -13,9 +17,9 @@ exports.login = async (data) => {
             }
         }
 
-        const dataUser = await UserModel.findOne({ idGoogle }).lean();
+        const dataUser = await User.findOne({ idGoogle }).lean();
         if (!dataUser) {
-            const newUser = await UserModel.create({
+            const newUser = await User.create({
                 idGoogle,
                 email,
                 userName,
@@ -31,12 +35,8 @@ exports.login = async (data) => {
                 }
             }
         } else {
-            const updateUser = await UserModel.findOneAndUpdate({
-                idGoogle
-            }, {
-                userName,
-                avatar
-            });
+            const updateUser = await User
+                .findOneAndUpdate({ idGoogle }, { $set: { userName, avatar } }, { new: true });
             const token = await createToken(updateUser, '1d')
             return {
                 status: 200,

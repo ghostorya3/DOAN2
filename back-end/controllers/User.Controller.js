@@ -1,7 +1,7 @@
 const { handleResponse } = require('../services/Common.Service');
-const userServices = require('../services/User.Service');
+const userService = require('../services/User.Service');
 
-exports.login = (req, res) => {
-    const data = userServices.login(req.body);
+exports.login = async (req, res) => {
+    const data = await userService.login(req.body);
     return handleResponse(res, data);
 }

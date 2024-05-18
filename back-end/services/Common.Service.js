@@ -48,11 +48,11 @@ exports.handleSaveFile = (folder, work, id, file, time) => {
     }
 }
 
-exports.sendResult = (result) => {
+exports.sendResult = (result, id) => {
     console.log("🚀 ~ result:", result)
     let data = JSON.stringify({
         "result": result,
-        id: 20
+        id
     });
 
     let config = {

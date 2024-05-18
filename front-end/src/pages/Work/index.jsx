@@ -31,7 +31,7 @@ export default function Work() {
     }, [socket]);
     const mutation = useMutation({
         mutationFn: (data) => {
-            return POST('/api/exec/executeCode', data)
+            return POST('/exec/executeCode', data)
         },
         onSuccess: () => {
             // queryClient.invalidateQueries({ queryKey: ['getProject'] })

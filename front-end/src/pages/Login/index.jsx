@@ -1,14 +1,31 @@
+import { toast } from "react-toastify";
 import Image from "../../components/Image";
 import { AuthWithGoogle } from "../../components/auth/auth_google_signin_popup";
 import { POST } from "../../components/common";
 import { useMyContext } from "../../components/context";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const { login, setUserData } = useMyContext();
+    const navigate = useNavigate();
+
     const handleLogin = async () => {
         const { user } = await AuthWithGoogle();
-        const response = await POST('/Login')
+        if (user) {
+            const response = await POST('/user/login', user);
+            if (response.result) {
+                toast('Đăng nhập thành công!');
+                Cookies.set('token_classroom', response.token);
+                setUserData(response.user);
+                navigate('/Home');
+                login();
+            } else {
+                toast('Đăng nhập thất bại!')
+            }
+        } else {
+            toast('Có lỗi xảy ra!')
+        }
     }
     return (<>
         <div className="flex flex-col h-screen p-5">

@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  username: {
+  userName: {
     type: String,
     required: true,
   },
@@ -30,7 +30,10 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+const User = mongoose.model('User', userSchema);
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = User;
+
+
 
 

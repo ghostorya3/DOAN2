@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-// import JWT from "jsonwebtoken";
+import { jwtDecode } from "jwt-decode";
 import { ToastContainer, toast } from 'react-toastify';
+import Cookies from "js-cookie";
 
 const MyContext = createContext(undefined);
 
@@ -25,10 +26,12 @@ export const MyContextProvider = ({ children }) => {
     useEffect(() => {
         const socketIO = io('http://localhost:8080');
         if (socketIO) SetSocket(socketIO);
-        // const user = getInfoUser();
-        socketIO.emit('login', { id: 20 });
-        toast("Wow so easy!");
-
+        const user = getInfoUser();
+        if (user) {
+            setUser(user)
+            socketIO.emit('login', { id: user._id });
+        }
+        toast("Welcome to Classroom!");
     }, [isLoggedIn]);
 
 
@@ -49,9 +52,9 @@ export const useMyContext = () => {
 
 const getInfoUser = () => {
     try {
-        const token = Cookies.get('token');
-        const response = JWT.decode(token);
-        if (response) return response;
+        const token = Cookies.get('token_classroom');
+        const response = jwtDecode(token);
+        if (response) return response.data;
         return null
     } catch (error) {
         return null
