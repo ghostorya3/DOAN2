@@ -6,7 +6,7 @@ export default function Class() {
     return (
         <div>
             <div className='h-screen' >
-                <Header classNamee="lập trình phân tán"></Header>
+                <Header classNamee="Lập trình phân tán"></Header>
                 <SideBarLeft></SideBarLeft>
                 <SubHeader></SubHeader>
                 <News></News>
