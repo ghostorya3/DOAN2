@@ -65,3 +65,18 @@ exports.getListClass = async (id) => {
         return errorServer(error)
     }
 }
+
+exports.getDetailClass = async (id) => {
+    try {
+        if (!id) {
+            return { result: false, status: 400, message: 'Missing id' }
+        }
+        const data = await Class.findOne({ _id: new ObjectId(id) }).lean();
+        return {
+            status: 200,
+            data: { data }
+        }
+    } catch (error) {
+        return errorServer(error)
+    }
+}

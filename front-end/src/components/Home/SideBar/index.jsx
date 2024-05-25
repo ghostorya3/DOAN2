@@ -14,7 +14,7 @@ const SideBarLeft = () => {
                 <div className="w-max ml-5">
                     <LuHome className="text-2xl text-gray-500"></LuHome>
                 </div>
-                <div className="overflow-hidden whitespace-nowrap ml-5 text-xl cursor-pointer text-gray-500">Màn hình chính</div>
+                <div className="overflow-hidden whitespace-nowrap ml-5 text-xl cursor-pointer text-gray-500" onClick={() => navigate(`/Home`)}>Màn hình chính</div>
             </div>
             <div className="flex gap-2 hover:rounded-3xl hover:border ml-[-25px] p-2">
                 <div className="w-max ml-5">

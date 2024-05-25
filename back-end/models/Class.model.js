@@ -22,6 +22,10 @@ const classSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    classId: {
+        type: String,
+        default: Math.round(new Date().getTime() / 1000),
+    }
 });
 const Class = mongoose.model('Class', classSchema);
 

@@ -10,9 +10,7 @@ export default function Home() {
         return data
     }
     const { data, isError } = useQuery({ queryKey: ['getClass'], queryFn: getClass });
-    // if (isError) {
-    //     return <span>Error: {error.message}</span>
-    // }
+
     return (
         <div className='h-screen overflow-hidden'>
             <Header></Header>
