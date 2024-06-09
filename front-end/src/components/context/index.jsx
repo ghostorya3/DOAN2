@@ -31,7 +31,7 @@ export const MyContextProvider = ({ children }) => {
             setUser(user)
             socketIO.emit('login', { id: user._id });
         }
-        toast("Welcome to Classroom!");
+        // toast("Welcome to Classroom!");
     }, [isLoggedIn]);
 
 

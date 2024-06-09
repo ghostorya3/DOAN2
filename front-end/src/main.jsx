@@ -7,7 +7,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { MyContextProvider } from './components/context';
+import { MyContextProvider } from './components/Context';
 const queryClient = new QueryClient();
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
