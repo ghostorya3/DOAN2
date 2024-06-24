@@ -1,18 +1,16 @@
+import { useMyContext } from "../context";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
 
 
 export default function Root() {
+    const isLogin = Cookies.get('token_classroom');   
     const navigate = useNavigate();
+    useEffect(() => {
+        if (!isLogin) navigate('/Login');
+    }, [isLogin, navigate])
 
-    return (
-        <>
-            <head>
-                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" />
-            </head>
-            <div className="w-screen h-screen box-border overflow-y-scroll overflow-x-hidden font-roboto">
-                <Outlet></Outlet>
-            </div>
-        </>
-    )
+    return <Outlet></Outlet>;
 }

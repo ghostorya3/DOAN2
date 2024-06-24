@@ -1,26 +1,38 @@
 import Image from "../../Image";
-import { IoSearchOutline } from "react-icons/io5";
-
-const Header = () => {
-    return (<>
-        <div className="w-full px-8 py-3 flex justify-between items-center border-b-2">
-            <div className="flex items-center gap-4 justify-center font-medium text-base">
-                <div className="w-10 h-10">
-                    <Image src={'https://fullstack.edu.vn/static/media/f8-icon.18cd71cfcfa33566a22b.png'} attribute={'rounded-lg'}></Image>
+import { useMyContext } from "../../context";
+import { IoAddSharp } from "react-icons/io5";
+import Card from '../../Card/index'
+import { useState } from "react";
+export default function Header({ classNamee }) {
+    const { user } = useMyContext();
+    const [openCard, setOpenCard] = useState(false);
+    return (
+        <div className="border p-2 flex items-center justify-between h-16">
+            <div className="flex items-center">
+                <div className='w-12 h-10 ml-10'>
+                    <Image src='/Google-Classroom.png'></Image>
                 </div>
-                <div className="text-sm font-semibold">Học Lập Trình Để Đi Làm</div>
+                <h1 className="text-2xl font-medium text-gray-500">Classroom</h1>
+                {
+                    classNamee && <div className="text-2xl font-medium text-gray-500">&nbsp; &gt; &nbsp;{classNamee}</div>
+                }
             </div>
-            <div className="relative">
-                <input type="text" className="w-[500px] text-sm outline-none rounded-3xl px-10 py-2 border-2" placeholder="Tìm kiếm khoá học, bài viết, video, ..."/>
-                <IoSearchOutline className="absolute top-[8px] left-3 text-2xl text-gray-500"></IoSearchOutline>
-            </div>
-            <div className="flex gap-5 items-center">
-                <div className="text-sm font-medium">Đăng nhập</div>
-                <div className="border text-sm rounded-3xl bg-[#ff731f] text-white py-2 px-5 font-medium">Đăng ký</div>
+            <div className="relative flex items-center box-border">
+                <div className="rounded-full hover:border p-2 flex justify-center items-center mr-5 hover:bg-slate-200" onClick={() => setOpenCard((item) => !item)}>
+                    <IoAddSharp className="text-3xl cursor-pointer"></IoAddSharp>
+                </div>
+                <div className="absolute right-16 top-10 z-50">
+                    {openCard && <Card></Card>}
+                </div>
+                <div className="group">
+                    <div className='w-8 h-8 rounded-full cursor-pointer'>
+                        <Image src={user ? user.avatar : '/277894110_720178642472643_59267636986975849_n.jpg'} attribute={'rounded-full'}></Image>
+                    </div>
+                    <div className="absolute group-hover:flex hidden top-10 right-2 border bg-slate-100 w-40 h-10  justify-center items-center rounded-md">
+                        Đăng xuất
+                    </div>
+                </div>
             </div>
         </div>
-    </>)
+    );
 }
-
-export default Header
-

@@ -2,6 +2,10 @@ const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const classSchema = new mongoose.Schema({
+    classId: {
+        type: String,
+        default: Math.round(new Date().getTime() / 1000),
+    },
     className: {
         type: String,
         required: true,
@@ -22,10 +26,6 @@ const classSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    classId: {
-        type: String,
-        default: Math.round(new Date().getTime() / 1000),
-    }
 });
 const Class = mongoose.model('Class', classSchema);
 
