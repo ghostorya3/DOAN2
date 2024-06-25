@@ -24,19 +24,16 @@ export const MyContextProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        const socketIO = io('http://localhost:8080');
-        if (socketIO) SetSocket(socketIO);
         const user = getInfoUser();
         if (user) {
             setUser(user)
-            socketIO.emit('login', { id: user._id });
         }
         toast("Welcome to Classroom!");
     }, [isLoggedIn]);
 
 
     return (
-        <MyContext.Provider value={{ isLoggedIn, login, logout, setUserData, user, socket }}>
+        <MyContext.Provider value={{ isLoggedIn, login, logout, setUserData, user }}>
             {children}
         </MyContext.Provider>
     );

@@ -5,6 +5,7 @@ import SideBarLeft from '../../components/Home/SideBar';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { POST } from '../../components/common';
 import { useQuery } from '@tanstack/react-query';
+import Excercise from '../../components/Class/Exercise';
 
 export default function Class() {
     let { id } = useParams();
@@ -15,12 +16,13 @@ export default function Class() {
     const { data, isError } = useQuery({ queryKey: ['getDetailClass'], queryFn: getDetailClass });
 
     return (
-        <div>
-            <div className='h-screen' >
-                <Header classNamee={data?.data?.className}></Header>
-                <SideBarLeft></SideBarLeft>
-                <SubHeader></SubHeader>
-                <News classNamee={data?.data?.className}></News>
+        <div className='h-screen overflow-hidden' >
+            <Header classNamee={data?.data?.className}></Header>
+            <SideBarLeft></SideBarLeft>
+            <SubHeader></SubHeader>
+            {/* <News classNamee={data?.data?.className}></News> */}
+            <div className='ml-[84px] overflow-hidden'>
+                <Excercise></Excercise>
             </div>
         </div>
     )
