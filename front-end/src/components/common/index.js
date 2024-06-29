@@ -21,7 +21,9 @@ export const POST = async (url, conditions = {}) => {
         });
         return response.data
     } catch (error) {
-        toast(error.message)
+        toast(error.response.data.message)
+        throw new Error(`HTTP error!`);
+
     }
 }
 

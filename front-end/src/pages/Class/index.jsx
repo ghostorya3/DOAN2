@@ -13,16 +13,22 @@ export default function Class() {
         const data = await POST('/class/getDetailClass', { id });
         return data
     }
-    const { data, isError } = useQuery({ queryKey: ['getDetailClass'], queryFn: getDetailClass });
+    const { data } = useQuery({ queryKey: ['getDetailClass'], queryFn: getDetailClass });
 
+
+    const getWork = async () => {
+        const data = await POST('/class/getWork', { id });
+        return data
+    }
+    const { data: dataWork } = useQuery({ queryKey: ['getWork'], queryFn: getWork });
     return (
         <div className='h-screen overflow-hidden' >
-            <Header classNamee={data?.data?.className}></Header>
+            <Header classNamee={data?.data?.className} isClass={true} isTeacher={data?.data?.isTeacher} id={id}></Header>
             <SideBarLeft></SideBarLeft>
             <SubHeader></SubHeader>
             {/* <News classNamee={data?.data?.className}></News> */}
             <div className='ml-[84px] overflow-hidden'>
-                <Excercise></Excercise>
+                <Excercise id={id} page={dataWork.page} data={dataWork?.data} isTeacher={data?.data?.isTeacher}></Excercise>
             </div>
         </div>
     )

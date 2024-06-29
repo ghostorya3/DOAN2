@@ -7,6 +7,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import moment from 'moment';
+import EditIcon from '@mui/icons-material/Edit';
+import ArrowUpwardSharpIcon from '@mui/icons-material/ArrowUpwardSharp';
+import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -28,45 +34,53 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-export default function CustomizedTables() {
+export default function CustomizedTables({ data, isTeacher, page }) {
   return (
-    <TableContainer component={Paper} className='mt-5'>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Tên bài tập</StyledTableCell>
-            <StyledTableCell align="right">Thời gian tạo</StyledTableCell>
-            <StyledTableCell align="right">Thời gian hết hạn</StyledTableCell>
-            <StyledTableCell align="right">Trạng thái</StyledTableCell>
-            <StyledTableCell align="right">Hành động</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow  key={row.name}>
-              <StyledTableCell component="th" scope="row">
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell align="right">{row.calories}</StyledTableCell>
-              <StyledTableCell align="right">{row.fat}</StyledTableCell>
-              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div className='flex flex-col justify-center items-center gap-5'>
+      <TableContainer component={Paper} className='mt-5'>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>Tên bài tập</StyledTableCell>
+              <StyledTableCell style={{ width: '20%', textAlign: 'center' }} >Thời gian tạo</StyledTableCell>
+              <StyledTableCell style={{ width: '20%', textAlign: 'center' }} >Thời gian hết hạn</StyledTableCell>
+              <StyledTableCell style={{ width: '20%', textAlign: 'center' }} >Trạng thái</StyledTableCell>
+              <StyledTableCell style={{ width: '20%', textAlign: 'center' }} >Hành động</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data?.map((row) => (
+              <StyledTableRow key={row.name}>
+                <StyledTableCell component="th" scope="row" style={{ width: '20%', textAlign: 'center' }}>
+                  {row.name}
+                </StyledTableCell>
+                <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>{moment(row.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</StyledTableCell>
+                <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>{moment(row.hannop).format('MMMM Do YYYY, h:mm:ss a')}</StyledTableCell>
+                <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>{row.carbs}</StyledTableCell>
+                <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>
+                  {
+                    isTeacher ? (<div className='flex gap-4 justify-center'>
+                      <EditIcon className='cursor-pointer text-yellow-500'></EditIcon>
+                      <DeleteSharpIcon className='cursor-pointer text-red-500'></DeleteSharpIcon>
+                    </div>) : (<>
+                      <div className='cursor-pointer flex justify-center text-green-500 items-center'>
+                        <ArrowUpwardSharpIcon className='cursor-pointer '></ArrowUpwardSharpIcon>
+                        <div className='text-xl'>Làm bài</div>
+                      </div>
+                    </>)
+                  }
+
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+      </TableContainer>
+      <Stack spacing={2}>
+        <Pagination count={page} color="primary" />
+      </Stack>
+    </div>
+
   );
 }

@@ -1,9 +1,10 @@
 import Image from "../../Image";
 import { useMyContext } from "../../context";
-import { IoAddSharp } from "react-icons/io5";
+import AddIcon from '@mui/icons-material/Add';
 import Card from '../../Card/index'
 import { useState } from "react";
-export default function Header({ classNamee }) {
+import { Fab } from "@mui/material";
+export default function Header({ classNamee, isClass, isTeacher, id }) {
     const { user } = useMyContext();
     const [openCard, setOpenCard] = useState(false);
     return (
@@ -18,17 +19,18 @@ export default function Header({ classNamee }) {
                 }
             </div>
             <div className="relative flex items-center box-border">
-                <div className="rounded-full hover:border p-2 flex justify-center items-center mr-5 hover:bg-slate-200" onClick={() => setOpenCard((item) => !item)}>
-                    <IoAddSharp className="text-3xl cursor-pointer"></IoAddSharp>
-                </div>
-                <div className="absolute right-16 top-10 z-50">
-                    {openCard && <Card></Card>}
+                <Fab color="primary" aria-label="add" fontSize="small" style={{ width: '40px', height: '40px', marginRight: '15px' }} onClick={() => setOpenCard((item) => !item)}>
+                    <AddIcon />
+                </Fab>
+
+                <div className="absolute right-16 top-12 z-50">
+                    {openCard && <Card isClass={isClass} isTeacher={isTeacher} id={id}></Card>}
                 </div>
                 <div className="group">
-                    <div className='w-8 h-8 rounded-full cursor-pointer'>
+                    <div className='w-10 h-10 rounded-full cursor-pointer'>
                         <Image src={user ? user.avatar : '/277894110_720178642472643_59267636986975849_n.jpg'} attribute={'rounded-full'}></Image>
                     </div>
-                    <div className="absolute group-hover:flex hidden top-10 right-2 border bg-slate-100 w-40 h-10  justify-center items-center rounded-md">
+                    <div className="absolute group-hover:flex hidden top-12 right-2 border bg-slate-100 w-40 h-10  justify-center items-center rounded-md">
                         Đăng xuất
                     </div>
                 </div>
