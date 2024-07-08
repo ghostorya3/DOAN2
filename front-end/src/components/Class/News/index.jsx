@@ -1,7 +1,7 @@
 import Image from "../../Image";
 import { useMyContext } from "../../context";
 
-export default function News({ classNamee }) {
+export default function News({ classNamee, setPage }) {
     const { user } = useMyContext();
 
     return (

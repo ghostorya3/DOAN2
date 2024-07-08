@@ -4,27 +4,23 @@ import { jwtDecode } from 'jwt-decode'
 import { toast } from "react-toastify";
 
 export const POST = async (url, conditions = {}) => {
-    try {
-        let headers = { "Content-Type": "application/json" };
-        const getTokeFromBrowser = Cookies.get('token_classroom');
-        if (getTokeFromBrowser) {
-            headers = {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getTokeFromBrowser}`,
-            };
-        }
-        const response = await axios({
-            method: "post",
-            url: `${import.meta.env.VITE_URL_API}/api${url}`,
-            data: conditions,
-            headers,
-        });
-        return response.data
-    } catch (error) {
-        toast(error.response.data.message)
-        throw new Error(`HTTP error!`);
 
+    let headers = { "Content-Type": "application/json" };
+    const getTokeFromBrowser = Cookies.get('token_classroom');
+    if (getTokeFromBrowser) {
+        headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getTokeFromBrowser}`,
+        };
     }
+    const response = await axios({
+        method: "post",
+        url: `${import.meta.env.VITE_URL_API}/api${url}`,
+        data: conditions,
+        headers,
+    });
+    return response.data
+
 }
 
 export const handleEroor = (error) => {

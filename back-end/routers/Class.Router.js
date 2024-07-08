@@ -8,5 +8,7 @@ router.post('/getListClass', Middleware, Class.getListClass)
 router.post('/getDetailClass', Middleware, Class.getDetailClass)
 router.post('/createWork', Middleware, Class.createWork)
 router.post('/getWork', Middleware, Class.getWork)
+router.post('/requestJoinClass', Middleware, Class.requestJoinClass)
+router.post('/getInfoClass', Middleware, Class.getInfoClass)
 
 module.exports = router

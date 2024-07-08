@@ -20,7 +20,9 @@ const App = ({ showModal, setShowModal, id }) => {
             queryClient.invalidateQueries({ queryKey: ['getWork'] });
             toast('Tạo bài tập thành công!')
         },
-
+        onError: (error) => {
+            toast(error?.response?.data?.message);
+        },
     });
 
     const handleCreateWork = async () => {

@@ -33,3 +33,16 @@ exports.getWork = async (req, res) => {
     const data = await classService.getWork(id, skip, limit);
     return handleResponse(res, data);
 }
+
+exports.requestJoinClass = async (req, res) => {
+    const { id } = req.body;
+    const user = req.idUser;
+    const data = await classService.requestJoinClass(id, user);
+    return handleResponse(res, data);
+}
+
+exports.getInfoClass = async (req, res) => {
+    const { sid } = req.body;
+    const data = await classService.getInfoClass(sid);
+    return handleResponse(res, data);
+}

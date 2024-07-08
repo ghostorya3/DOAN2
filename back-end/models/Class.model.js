@@ -26,6 +26,10 @@ const classSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    isOpen: {
+        type: Boolean,
+        default: false,
+    },
 });
 const Class = mongoose.model('Class', classSchema);
 
