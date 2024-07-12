@@ -1,25 +1,15 @@
 const { errorServer, handleSaveFile, sendResult } = require("./Common.Service");
-const { exec } = require('child_process');
-
+const Work = require("../models/Work.model");
 exports.executeCode = async (data) => {
     try {
-        const file = await handleSaveFile(data.language, data.work, data.id, data.code, new Date().getTime());
-
-        const command = handleCommand(data.language, file.fileCode);
-
-        exec(`cd ${file.path} && ${command}`, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Lỗi: ${error.message}`);
-                // Trả về lỗi cho client
-                return;
+        if (!data.idWork) {
+            return {
+                status: 400,
+                message: "Missing data"
             }
-            if (stderr) {
-                console.error(`Lỗi tiêu chuẩn: ${stderr}`);
-                ga
-                // Trả về lỗi cho client
-            }
-            return sendResult(stdout, data.id)
-        });
+        }
+        const dataWork = await Work.findById(data.idWork).lean();
+        
         return {
             status: 200,
             message: 'success'

@@ -25,6 +25,10 @@ const workSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    user: {
+        type: [String],
+        default: []
+    }
 });
 const Work = mongoose.model('Work', workSchema);
 
