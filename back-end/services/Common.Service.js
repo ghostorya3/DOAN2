@@ -31,7 +31,7 @@ exports.errorServer = (error) => {
 }
 
 exports.handleSaveFile = (work, id) => {
-    const path = `data/${id}/${work}`;
+    const path = `data/work/${id}/${work}`;
     // const filePath = `code/${work}/${id}/${folder}/${time}.${folder}`;
 
     if (!fs.existsSync(path)) {

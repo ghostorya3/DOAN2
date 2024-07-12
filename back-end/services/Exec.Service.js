@@ -17,7 +17,7 @@ exports.executeCode = async (data) => {
             }
         }
 
-        if (dataWork.user.includes(data.idUser)) {
+        if (dataWork?.user?.includes(data.idUser)) {
             return {
                 status: 400,
                 message: "Bạn đã làm bài này rồi"
@@ -29,8 +29,10 @@ exports.executeCode = async (data) => {
         return {
             status: 200,
             message: 'success',
-            data: path,
-            token: token
+            data: {
+                path,
+                token
+            }
         }
     } catch (error) {
         return errorServer(error);

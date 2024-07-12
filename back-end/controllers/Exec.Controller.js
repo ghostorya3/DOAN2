@@ -1,8 +1,8 @@
 const { handleResponse } = require('../services/Common.Service');
 const execServices = require('../services/Exec.Service');
 
-exports.executeCode = (req, res) => {
+exports.executeCode = async (req, res) => {
     const idUser = req.idUser;
-    const data = execServices.executeCode({ id: idUser, ...req.body });
+    const data = await execServices.executeCode({ idUser: idUser, ...req.body });
     return handleResponse(res, data);
 }
