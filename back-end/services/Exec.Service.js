@@ -9,10 +9,26 @@ exports.executeCode = async (data) => {
             }
         }
         const dataWork = await Work.findById(data.idWork).lean();
-        
+        if (!dataWork) {
+            return {
+                status: 404,
+                message: "Not found"
+            }
+        }
+
+        if (dataWork.user.includes(data.idUser)) {
+            return {
+                status: 400,
+                message: "Bạn đã làm bài này rồi"
+            }
+        }
+
+        const file = await handleSaveFile(data.idWork, data.idUser);
+
         return {
             status: 200,
-            message: 'success'
+            message: 'success',
+            data: file
         }
     } catch (error) {
         return errorServer(error);

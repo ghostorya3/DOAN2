@@ -30,23 +30,20 @@ exports.errorServer = (error) => {
     }
 }
 
-exports.handleSaveFile = (folder, work, id, file, time) => {
-    const path = `code/${work}/${id}/${folder}`;
-    const filePath = `code/${work}/${id}/${folder}/${time}.${folder}`;
+exports.handleSaveFile = (work, id) => {
+    const path = `data/${id}/${work}`;
+    // const filePath = `code/${work}/${id}/${folder}/${time}.${folder}`;
 
     if (!fs.existsSync(path)) {
         fs.mkdirSync(path, { recursive: true });
     }
 
-    fs.writeFile(filePath, file, (err) => {
-        if (err) {
-            return false
-        }
-    });
-    return {
-        path: `code/${work}/${id}/${folder}`,
-        fileCode: `${time}.${folder}`
-    }
+    // fs.writeFile(filePath, file, (err) => {
+    //     if (err) {
+    //         return false
+    //     }
+    // });
+    return `data/${id}/${work}`
 }
 
 exports.sendResult = (result, id) => {
