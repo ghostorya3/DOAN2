@@ -15,6 +15,7 @@ exports.executeCode = async (data) => {
             }
             if (stderr) {
                 console.error(`Lỗi tiêu chuẩn: ${stderr}`);
+                ga
                 // Trả về lỗi cho client
             }
             return sendResult(stdout, data.id)
