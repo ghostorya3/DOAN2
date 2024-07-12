@@ -8,7 +8,6 @@ services:
       - TZ=Etc/UTC
       - DEFAULT_WORKSPACE=/config/workspace
     volumes:
-      - ./data/config:/config
       - ./data/work:/config/workspace
     ports:
       - 8443:8443

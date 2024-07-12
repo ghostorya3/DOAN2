@@ -12,12 +12,13 @@ var proxy = new httpProxy.createProxyServer({
 
 var proxyServer = http.createServer(function (req, res) {
 
+  // console.log(req.url)
   if (!req.url.includes('token')) {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     return res.end('NotFound');
   }
 
-  let token = req.url.split('&')[0].replace('?token=', '')
+  let token = req.url.split('&')[0].replace('/?token=', '')
   if (!token) {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     return res.end('NotFound');
