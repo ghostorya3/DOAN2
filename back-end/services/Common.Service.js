@@ -1,6 +1,7 @@
 const httpStatus = require("./HttpStatus.Service")
 const fs = require('fs');
 const axios = require('axios');
+const nodemailer = require("nodemailer");
 
 exports.handleResponse = (res, data) => {
     switch (data?.status) {
@@ -49,7 +50,6 @@ exports.handleSaveFile = (folder, work, id, file, time) => {
 }
 
 exports.sendResult = (result, id) => {
-    console.log("🚀 ~ result:", result)
     let data = JSON.stringify({
         "result": result,
         id
@@ -72,4 +72,26 @@ exports.sendResult = (result, id) => {
         .catch((error) => {
             console.log(error);
         });
+}
+
+exports.sendMail = async (mail, content) => {
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+            user: "ghostorya3@gmail.com",
+            pass: "ilzu yhfz jfmf cayo",
+        },
+    });
+
+    const info = await transporter.sendMail({
+        from: '<ghostorya3@gmail.com>', // sender address
+        to: mail, // list of receivers
+        subject: "Xin chào, email này được gửi từ hệ thống classroom", // Subject line
+        text: content, // plain text body
+        html: content, // html body
+    });
+    console.log("Message sent: %s", info.messageId);
+
 }

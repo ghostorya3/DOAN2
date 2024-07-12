@@ -13,6 +13,7 @@ import ArrowUpwardSharpIcon from '@mui/icons-material/ArrowUpwardSharp';
 import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import { useNavigate } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,6 +36,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables({ data, isTeacher, page }) {
+  console.log("🚀 ~ CustomizedTables ~ data:", data)
+  const navigate = useNavigate();
+
   return (
     <div className='flex flex-col justify-center items-center gap-5'>
       <TableContainer component={Paper} className='mt-5'>
@@ -59,13 +63,13 @@ export default function CustomizedTables({ data, isTeacher, page }) {
                 <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>{row.carbs}</StyledTableCell>
                 <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>
                   {
-                    isTeacher ? (<div className='flex gap-4 justify-center'>
+                    !isTeacher ? (<div className='flex gap-4 justify-center'>
                       <EditIcon className='cursor-pointer text-yellow-500'></EditIcon>
                       <DeleteSharpIcon className='cursor-pointer text-red-500'></DeleteSharpIcon>
                     </div>) : (<>
                       <div className='cursor-pointer flex justify-center text-green-500 items-center'>
                         <ArrowUpwardSharpIcon className='cursor-pointer '></ArrowUpwardSharpIcon>
-                        <div className='text-xl'>Làm bài</div>
+                        <div className='text-xl' onClick={() => navigate(`/Excercise/${row._id}`)}>Làm bài</div>
                       </div>
                     </>)
                   }

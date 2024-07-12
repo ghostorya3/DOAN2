@@ -10,29 +10,24 @@ import { ImCancelCircle } from "react-icons/im";
 
 
 const App = ({ showModal, setShowModal, data }) => {
-    const [name, setName] = useState('')
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: (data) => {
-            return POST('/class/createClass', data)
+            if (data.type == 'accept')
+                return POST('/class/acceptJoinClass', data)
+            else
+                return POST('/class/cancelJoinClass', data)
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['getClass'] });
-            toast('Xin vào lớp học thành công!')
+            queryClient.invalidateQueries({ queryKey: ['getInfoClass'] });
+            toast('Success')
+            setShowModal(false)
         },
         onError: (error) => {
             toast(error);
         },
     });
 
-    const handleCreateClass = async () => {
-        setShowModal(false);
-        if (!name) {
-            toast('Vui lòng nhập tên lớp học!')
-        }
-        mutation.mutate({ name });
-        setName('')
-    }
     return (
         <>
             <Modal open={showModal} footer={false} onCancel={() => setShowModal(false)}>
@@ -47,11 +42,11 @@ const App = ({ showModal, setShowModal, data }) => {
                                 <div className='font-medium'>{item?.users?.userName}</div>
                             </div>
                             <div className='flex gap-2 mt-4'>
-                                <div className='flex gap-2 items-center bg-green-500 h-8 p-2 cursor-pointer text-white rounded border'>
+                                <div onClick={() => mutation.mutate({ sid: item._id, type: 'accept' })} className='flex gap-2 items-center bg-green-500 h-8 p-2 cursor-pointer text-white rounded border'>
                                     <SiVerizon></SiVerizon>
                                     <div>Chấp nhận</div>
                                 </div>
-                                <div className='flex gap-2 items-center bg-red-500 h-8 p-2 text-white cursor-pointer rounded border'>
+                                <div onClick={() => mutation.mutate({ sid: item._id, idItem: item.idItem, type: 'reject' })} className='flex gap-2 items-center bg-red-500 h-8 p-2 text-white cursor-pointer rounded border'>
                                     <ImCancelCircle></ImCancelCircle>
                                     <div>Từ chối</div>
                                 </div>

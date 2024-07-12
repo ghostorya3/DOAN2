@@ -46,3 +46,23 @@ exports.getInfoClass = async (req, res) => {
     const data = await classService.getInfoClass(sid);
     return handleResponse(res, data);
 }
+
+exports.acceptJoinClass = async (req, res) => {
+    const { sid } = req.body;
+    const user = req.idUser;
+
+    const data = await classService.acceptJoinClass(sid, user);
+    return handleResponse(res, data);
+}
+
+exports.cancelJoinClass = async (req, res) => {
+    const { sid } = req.body;
+    const data = await classService.cancelJoinClass(sid);
+    return handleResponse(res, data);
+}
+
+exports.deleteJoinClass = async (req, res) => {
+    const { sid, classId } = req.body;
+    const data = await classService.deleteJoinClass(sid, classId);
+    return handleResponse(res, data);
+}

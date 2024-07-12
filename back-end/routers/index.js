@@ -4,8 +4,6 @@ const router = express.Router();
 const excecRouter = require('./Exec.Router');
 const classRouter = require('./Class.Router');
 
-
-
 router.use('/user', userRouter);
 router.use('/exec', excecRouter);
 router.use('/class', classRouter);

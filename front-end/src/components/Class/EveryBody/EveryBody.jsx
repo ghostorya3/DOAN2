@@ -23,9 +23,9 @@ const EveryBody = ({ isTeacher }) => {
     return (
         <div className="flex w-full justify-center ">
             <div className='w-1/2 mt-10'>
-                {isTeacher && <div onClick={() => setOpenModal(true)} className='flex items-center gap-2 mb-4 border w-max p-2 rounded-xl bg-slate-50 hover:bg-slate-200 cursor-pointer'>
+                {isTeacher && data?.countRequestToClass > 0 && <div onClick={() => setOpenModal(true)} className='flex items-center gap-2 mb-4 border w-max p-2 rounded-xl bg-slate-50 hover:bg-slate-200 cursor-pointer'>
                     <MdOutlineNotificationsActive className='text-xl text-red-500'></MdOutlineNotificationsActive>
-                    <div>5 yêu cầu tham gia lớp học </div>
+                    <div>{data?.countRequestToClass} yêu cầu tham gia lớp học </div>
                 </div>}
                 <div className="w-full h-14  border-b border-black">
                     <div className="font-normal text-3xl">Giáo viên</div>
@@ -49,7 +49,7 @@ const EveryBody = ({ isTeacher }) => {
                             <div className='font-medium'>{item?.userName}</div>
                         </div>
                         <div className='relative'>
-                            <ListStudent isTeacher={isTeacher}></ListStudent>
+                            <ListStudent isTeacher={isTeacher} data={item} classId={id}></ListStudent>
                         </div>
                     </div>
                 ))}
