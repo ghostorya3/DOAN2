@@ -1,4 +1,5 @@
-const { errorServer, handleSaveFile, sendResult } = require("./Common.Service");
+const { errorServer, handleSaveFile, sendResult, } = require("./Common.Service");
+const { createToken } = require("./Auth.Service");
 const Work = require("../models/Work.model");
 exports.executeCode = async (data) => {
     try {
@@ -23,12 +24,13 @@ exports.executeCode = async (data) => {
             }
         }
 
-        const file = await handleSaveFile(data.idWork, data.idUser);
-
+        const path = await handleSaveFile(data.idWork, data.idUser);
+        const token = await createToken({ url: path }, '1d')
         return {
             status: 200,
             message: 'success',
-            data: file
+            data: path,
+            token: token
         }
     } catch (error) {
         return errorServer(error);

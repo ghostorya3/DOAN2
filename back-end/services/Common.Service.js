@@ -43,7 +43,7 @@ exports.handleSaveFile = (work, id) => {
     //         return false
     //     }
     // });
-    return `data/${id}/${work}`
+    return `folder=/config/workspace/${id}/${work}`
 }
 
 exports.sendResult = (result, id) => {
