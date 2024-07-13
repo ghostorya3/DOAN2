@@ -5,20 +5,20 @@ const nodemailer = require("nodemailer");
 const { exec } = require('child_process');
 
 const setPermissions = (dirPath) => {
-  exec(`chmod -R 777 ${dirPath}`, (err, stdout, stderr) => {
-    if (err) {
-      console.error(`Error setting permissions: ${stderr}`);
-      return;
-    }
-    console.log(`Permissions set successfully: ${stdout}`);
-  });
+    exec(`chmod -R 777 ${dirPath}`, (err, stdout, stderr) => {
+        if (err) {
+            console.error(`Error setting permissions: ${stderr}`);
+            return;
+        }
+        console.log(`Permissions set successfully: ${stdout}`);
+    });
 };
 
 exports.handleResponse = (res, data) => {
     switch (data?.status) {
         case 200:
             return httpStatus.OK(res, data?.message, data?.data)
-        case 400:a
+        case 400:
             return httpStatus.BadRequestException(res, data?.message)
         case 401:
             return httpStatus.Unauthorized(res)
@@ -45,9 +45,9 @@ exports.handleSaveFile = (work, id) => {
     const path = `data/work/${id}/${work}`;
 
     if (!fs.existsSync(path)) {
-        fs.mkdirSync(path, { recursive: true, mode: 0o755 });
+        fs.mkdirSync(path, { recursive: true });
     }
-    this.setPermissions()
+    setPermissions(`data/work/${id}`)
     return `folder=/config/workspace/${id}/${work}`
 }
 
