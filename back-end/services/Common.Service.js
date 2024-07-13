@@ -47,7 +47,7 @@ exports.handleSaveFile = (work, id) => {
     if (!fs.existsSync(path)) {
         fs.mkdirSync(path, { recursive: true });
     }
-    setPermissions(`data/work/${id}`)
+    // setPermissions(`data/work/${id}`)
     return `folder=/config/workspace/${id}/${work}`
 }
 

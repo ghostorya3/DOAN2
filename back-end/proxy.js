@@ -12,7 +12,9 @@ var proxy = new httpProxy.createProxyServer({
 
 var proxyServer = http.createServer(function (req, res) {
 
-  // console.log(req.url)
+  if(req.url.includes('/stable')){
+    return proxy.web(req, res);
+  }
   if (!req.url.includes('token')) {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     return res.end('NotFound');
@@ -24,7 +26,13 @@ var proxyServer = http.createServer(function (req, res) {
     return res.end('NotFound');
   }
   jwt.verify(token, process.env.PRIVATE_KEY, (err, decoded) => {
-    if (err || !req.url.includes(decoded?.data?.url)) {
+    if (err) {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      return res.end('NotFound');
+    }
+
+    if(!req.url.includes(decoded?.data?.url) && !decoded?.data?.autoPass){
+     
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       return res.end('NotFound');
     }

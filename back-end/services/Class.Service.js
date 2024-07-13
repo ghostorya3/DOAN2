@@ -6,6 +6,8 @@ const { errorServer, sendMail } = require("./Common.Service")
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
 const { pipeline } = require("nodemailer/lib/xoauth2");
+const { createToken } = require("./Auth.Service");
+const XLSX = require('xlsx');
 
 exports.createClass = async (data) => {
     try {
@@ -242,9 +244,9 @@ exports.requestJoinClass = async (id, user) => {
             requestTo: id
         });
 
-        const user = await User.findById(isClassExist.createdBy)
+        const userr = await User.findById(isClassExist.createdBy)
 
-        sendMail(user?.email, "Có người dùng muốn tham gia vào lớp học của bạn")
+        sendMail(userr?.email, "Có người dùng muốn tham gia vào lớp học của bạn")
 
         return { status: 200, message: 'Yêu cầu tham gia lớp học thành công' }
     } catch (error) {
@@ -359,8 +361,9 @@ exports.deleteJoinClass = async (sid, classId) => {
     }
 }
 
-exports.getListStudentDoExcercise = async (sid, user, status) => {
+exports.getListStudentDoExcercise = async (sid, user, status, isExport = true, res) => {
     try {
+
         if (!sid) return { result: false, status: 400, message: 'Missing body' }
 
         const dataWork = await Work.findById(sid).lean();
@@ -416,36 +419,107 @@ exports.getListStudentDoExcercise = async (sid, user, status) => {
             })
         }
 
-        pipeline.push({
-            $project: {
-                userName: 1,
-                createdAt: '$requests.createdAt',
-                point: '$requests.point',
-                status: {
-                    $cond: {
-                        if: { $eq: ["$requestExists", true] },
-                        then: {
-                            $cond: {
-                                if: { $lte: ['$requests.createdAt', dataWork.hannop] },
-                                then: 'Hoàn thành',
-                                else: 'Quá hạn'
-                            }
-                        },
-                        else: 'Chưa nộp'
-                    }
-                },
-                idRequest: 'requests._id'
-            }
-        })
+        if (isExport) {
+            pipeline.push({
+                $project: {
+                    _id: 0,
+                    name: '$userName',
+                    point: '$requests.point',
+                    createdAt: '$requests.createdAt',
+                    status: {
+                        $cond: {
+                            if: { $eq: ["$requestExists", true] },
+                            then: {
+                                $cond: {
+                                    if: { $lte: ['$requests.createdAt', dataWork.hannop] },
+                                    then: 'Hoàn thành',
+                                    else: 'Quá hạn'
+                                }
+                            },
+                            else: 'Chưa nộp'
+                        }
+                    },
+                }
+            })
+        } else {
+            pipeline.push({
+                $project: {
+                    userName: 1,
+                    createdAt: '$requests.createdAt',
+                    point: '$requests.point',
+                    status: {
+                        $cond: {
+                            if: { $eq: ["$requestExists", true] },
+                            then: {
+                                $cond: {
+                                    if: { $lte: ['$requests.createdAt', dataWork.hannop] },
+                                    then: 'Hoàn thành',
+                                    else: 'Quá hạn'
+                                }
+                            },
+                            else: 'Chưa nộp'
+                        }
+                    },
+                    idRequest: '$requests._id',
+                    idWork: dataWork._id
+                }
+            })
+        }
 
         const data = await User.aggregate(pipeline)
 
+        if (isExport) {
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+            const url = `data/report/report_${new Date().getTime()}.xlsx`;
+            await XLSX.writeFile(workbook, url);
+            return res.download(`${url}`, (err, data) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send('Có lỗi xảy ra khi tải xuống tệp.');
+                } else {
+                    console.log(`Tệp đã được tạo và tải xuống thành công tại: ${url}`);
+                }
+            });
+        }
         return {
             result: true, status: 200,
             data: {
                 data,
                 dataWork
             }
+        }
+    } catch (error) {
+        console.log(error)
+        return errorServer(error)
+    }
+}
+
+exports.chamDiem = async (sid, point) => {
+    try {
+
+        if (!sid) return { result: false, status: 400, message: 'Missing body' }
+
+        const requestData = await Request.findById(sid).lean();
+        if (!requestData) {
+            return { status: 404, message: 'Not Found' }
+        }
+
+        const workData = await Work.findById(requestData.requestTo).lean();
+        if (!workData) {
+            return { status: 404, message: 'Not Found' }
+        }
+
+
+        await Request.findByIdAndUpdate(sid, {
+            point: point
+        });
+
+        return {
+            result: true, status: 200,
+            message: 'Success'
         }
     } catch (error) {
         return errorServer(error)

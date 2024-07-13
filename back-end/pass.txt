@@ -12,3 +12,6 @@ docker run -d \
   -p 8443:8443 \
   -v ./data/work:/config/workspace \
   linuxserver/code-server
+
+
+g++ ga.cpp -o ga => ./ga

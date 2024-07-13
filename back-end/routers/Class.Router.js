@@ -14,6 +14,8 @@ router.post('/acceptJoinClass', Middleware, Class.acceptJoinClass)
 router.post('/cancelJoinClass', Middleware, Class.cancelJoinClass)
 router.post('/deleteJoinClass', Middleware, Class.deleteJoinClass)
 router.post('/getDetailWork', Middleware, Class.getDetailWork)
+
 router.post('/getListStudentDoExcercise', Middleware, Class.getListStudentDoExcercise)
+router.post('/chamDiem', Middleware, Class.chamDiem)
 
 module.exports = router

@@ -17,6 +17,7 @@ const App = ({ showModal, setShowModal, id }) => {
             queryClient.invalidateQueries({ queryKey: ['getListStudentDoExcercise'] });
             toast('Success!')
             setPoint('')
+            setShowModal(false)
         },
         onError: (error) => {
             toast(error?.response?.data?.message);
@@ -24,7 +25,7 @@ const App = ({ showModal, setShowModal, id }) => {
     })
     return (
         <>
-            <Modal open={showModal} onCancel={() => setShowModal(false)}>
+            <Modal open={showModal} footer={[]} onCancel={() => setShowModal(false)}>
                 <div>
                     <label htmlFor="name">Nhập điểm:</label>
                     <div className='border w-full'>

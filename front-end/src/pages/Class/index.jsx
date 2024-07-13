@@ -41,7 +41,7 @@ export default function Class() {
     }, [search])
     return (
         <div className='h-screen overflow-x-hidden no-scrollbar' >
-            <Header classNamee={data?.data?.className} isClass={true} isTeacher={data?.data?.isTeacher} id={id}></Header>
+            <Header idClass={data?.data.classId} classNamee={data?.data?.className} isClass={true} isTeacher={data?.data?.isTeacher} id={id}></Header>
             <SideBarLeft></SideBarLeft>
             <SubHeader setPage={setPage} page={page}></SubHeader>
             {page === 0 && <News classNamee={data?.data?.className} ></News>}

@@ -36,9 +36,9 @@ exports.getDetailWork = async (req, res) => {
 }
 
 exports.getListStudentDoExcercise = async (req, res) => {
-    const { id, status } = req.body;
+    const { id, status, isExport } = req.body;
     const user = req.idUser;
-    const data = await classService.getListStudentDoExcercise(id, user, status);
+    const data = await classService.getListStudentDoExcercise(id, user, status, isExport, res);
     return handleResponse(res, data);
 }
 
@@ -46,6 +46,12 @@ exports.getWork = async (req, res) => {
     const { id, skip = 0, limit = 10, search } = req.body;
     const user = req.idUser;
     const data = await classService.getWork(id, skip, limit, search, user);
+    return handleResponse(res, data);
+}
+
+exports.chamDiem = async (req, res) => {
+    const { id, point } = req.body;
+    const data = await classService.chamDiem(id, point);
     return handleResponse(res, data);
 }
 
