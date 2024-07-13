@@ -1,0 +1,14 @@
+14.225.255.161
+THBac4oIdecBruEJdMzm
+
+docker ps
+
+docker stop 
+
+docker rm 
+
+docker run -d \
+  --name my-code-server \
+  -p 8443:8443 \
+  -v ./data/work:/config/workspace \
+  linuxserver/code-server

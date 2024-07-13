@@ -18,7 +18,7 @@ const App = ({ showModal, setShowModal }) => {
             toast('Tạo lớp học thành công!')
         },
         onError: (error) => {
-            toast(error);
+            toast(error?.response?.data?.message);
         },
     });
     const handleCreateClass = async () => {

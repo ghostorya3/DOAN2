@@ -9,11 +9,12 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import moment from 'moment';
 import EditIcon from '@mui/icons-material/Edit';
-import ArrowUpwardSharpIcon from '@mui/icons-material/ArrowUpwardSharp';
+import { MdOutlineArrowCircleUp } from "react-icons/md";
 import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from "react-router-dom";
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,9 +37,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables({ data, isTeacher, page }) {
-  console.log("🚀 ~ CustomizedTables ~ data:", data)
   const navigate = useNavigate();
 
+  const time = (hannop) => {
+    if (moment().isBefore(moment(hannop)))
+      return 'Còn hạn'
+    else return 'hết hạn'
+  }
   return (
     <div className='flex flex-col justify-center items-center gap-5'>
       <TableContainer component={Paper} className='mt-5'>
@@ -60,17 +65,20 @@ export default function CustomizedTables({ data, isTeacher, page }) {
                 </StyledTableCell>
                 <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>{moment(row.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</StyledTableCell>
                 <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>{moment(row.hannop).format('MMMM Do YYYY, h:mm:ss a')}</StyledTableCell>
-                <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>{row.carbs}</StyledTableCell>
+                <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>{isTeacher ? time(row.hannop) : row.status}</StyledTableCell>
                 <StyledTableCell style={{ width: '20%', textAlign: 'center' }}>
                   {
-                    !isTeacher ? (<div className='flex gap-4 justify-center'>
-                      <EditIcon className='cursor-pointer text-yellow-500'></EditIcon>
-                      <DeleteSharpIcon className='cursor-pointer text-red-500'></DeleteSharpIcon>
+                    isTeacher ? (<div className='flex gap-4 justify-center'>
+                      <PlaylistAddCheckIcon fontSize='large' className='cursor-pointer text-green-500'
+                      onClick={() => navigate(`/ListStudentDoExcercise/${row._id}`)}
+                      ></PlaylistAddCheckIcon>
+                      <EditIcon className='cursor-pointer text-yellow-500 mt-1'></EditIcon>
+                      <DeleteSharpIcon className='cursor-pointer text-red-500 mt-1' ></DeleteSharpIcon>
                     </div>) : (<>
-                      <div className='cursor-pointer flex justify-center text-green-500 items-center'>
-                        <ArrowUpwardSharpIcon className='cursor-pointer '></ArrowUpwardSharpIcon>
-                        <div className='text-xl' onClick={() => navigate(`/Excercise/${row._id}`)}>Làm bài</div>
-                      </div>
+                      {row.status === 'Chưa nộp' && <div className='cursor-pointer flex justify-center text-green-500 items-center'>
+                        <MdOutlineArrowCircleUp className='cursor-pointer text-xl'></MdOutlineArrowCircleUp>
+                        <div className='text-xl font-medium' onClick={() => navigate(`/Excercise/${row._id}`)}>Làm bài</div>
+                      </div>}
                     </>)
                   }
 

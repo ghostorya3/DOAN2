@@ -28,9 +28,24 @@ exports.createWork = async (req, res) => {
     return handleResponse(res, data);
 }
 
+exports.getDetailWork = async (req, res) => {
+    const { id } = req.body;
+    const user = req.idUser;
+    const data = await classService.getDetailWork(id);
+    return handleResponse(res, data);
+}
+
+exports.getListStudentDoExcercise = async (req, res) => {
+    const { id, status } = req.body;
+    const user = req.idUser;
+    const data = await classService.getListStudentDoExcercise(id, user, status);
+    return handleResponse(res, data);
+}
+
 exports.getWork = async (req, res) => {
-    const { id, skip = 0, limit = 10 } = req.body;
-    const data = await classService.getWork(id, skip, limit);
+    const { id, skip = 0, limit = 10, search } = req.body;
+    const user = req.idUser;
+    const data = await classService.getWork(id, skip, limit, search, user);
     return handleResponse(res, data);
 }
 

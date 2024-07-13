@@ -24,7 +24,7 @@ const App = ({ showModal, setShowModal, data }) => {
             setShowModal(false)
         },
         onError: (error) => {
-            toast(error);
+            toast(error?.response?.data?.message);
         },
     });
 

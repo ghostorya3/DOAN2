@@ -10,17 +10,17 @@ const App = ({ isClass, isTeacher, id }) => {
     const [showModalJoinClass, setShowModalJoinClass] = useState(false);
     return (
         <>
-            <Space Space direction="vertical" size={16} className='w-[200px]'>
-                <Card className='shadow-2xl '>
+            <Space>
+                <Card className='shadow-2xl w-[200px]'>
                     {!isClass &&
                         <>
-                            <div className="font-medium hover:border  hover:bg-slate-100 cursor-pointer" onClick={() => setShowModalJoinClass(true)}>Tham gia lớp học</div>
-                            <div className='font-medium mt-4 hover:border  hover:bg-slate-100 cursor-pointer' onClick={() => setShowModalCreateClass(true)}>Tạo lớp học</div>
+                            <div className="font-medium hover:text-blue-600 cursor-pointer" onClick={() => setShowModalJoinClass(true)}>Tham gia lớp học</div>
+                            <div className='font-medium mt-4 hover:text-blue-600 cursor-pointer' onClick={() => setShowModalCreateClass(true)}>Tạo lớp học</div>
                         </>
                     }
                     {isTeacher &&
                         <>
-                            <div className='font-medium hover:border hover:bg-slate-100 cursor-pointer' onClick={() => setShowModalCreateWork(true)}>Tạo bài tập</div>
+                            <div className='font-medium hover:text-blue-600 cursor-pointer' onClick={() => setShowModalCreateWork(true)}>Tạo bài tập</div>
                         </>
                     }
                 </Card>

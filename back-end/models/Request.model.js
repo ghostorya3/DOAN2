@@ -16,6 +16,17 @@ const requestSchema = new mongoose.Schema({
     requestTo: {
         type: String,
     },
+    point: {
+        type: String,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 module.exports = mongoose.model('Request', requestSchema);

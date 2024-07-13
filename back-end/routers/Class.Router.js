@@ -13,5 +13,7 @@ router.post('/getInfoClass', Middleware, Class.getInfoClass)
 router.post('/acceptJoinClass', Middleware, Class.acceptJoinClass)
 router.post('/cancelJoinClass', Middleware, Class.cancelJoinClass)
 router.post('/deleteJoinClass', Middleware, Class.deleteJoinClass)
+router.post('/getDetailWork', Middleware, Class.getDetailWork)
+router.post('/getListStudentDoExcercise', Middleware, Class.getListStudentDoExcercise)
 
 module.exports = router

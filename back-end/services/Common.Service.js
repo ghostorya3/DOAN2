@@ -51,31 +51,6 @@ exports.handleSaveFile = (work, id) => {
     return `folder=/config/workspace/${id}/${work}`
 }
 
-exports.sendResult = (result, id) => {
-    let data = JSON.stringify({
-        "result": result,
-        id
-    });
-
-    let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: process.env.DOMAIN_SOCKET,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: data
-    };
-
-    axios.request(config)
-        .then((response) => {
-            console.log(JSON.stringify(response.data));
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-}
-
 exports.sendMail = async (mail, content) => {
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -96,4 +71,18 @@ exports.sendMail = async (mail, content) => {
     });
     console.log("Message sent: %s", info.messageId);
 
+}
+
+exports.checkFolderEmpty = async (data) => {
+    return fs.readdir(`data/work/${data.idUser}/${data.idWork}`, (err, files) => {
+        if (err) {
+            return false
+        } else {
+            if (files.length === 0) {
+                return false
+            } else {
+                return true
+            }
+        }
+    });
 }

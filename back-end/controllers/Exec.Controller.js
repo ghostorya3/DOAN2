@@ -6,3 +6,9 @@ exports.executeCode = async (req, res) => {
     const data = await execServices.executeCode({ idUser: idUser, ...req.body });
     return handleResponse(res, data);
 }
+
+exports.submitCode = async (req, res) => {
+    const idUser = req.idUser;
+    const data = await execServices.submitCode({ idUser: idUser, ...req.body });
+    return handleResponse(res, data);
+}

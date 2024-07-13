@@ -5,7 +5,7 @@ const Request = require("../models/Request.model");
 const { errorServer, sendMail } = require("./Common.Service")
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
-const RequestModel = require("../models/Request.model");
+const { pipeline } = require("nodemailer/lib/xoauth2");
 
 exports.createClass = async (data) => {
     try {
@@ -101,7 +101,7 @@ exports.createWork = async (body, user) => {
             return { result: false, status: 400, message: 'Invalid data' }
         }
 
-        await Work.create(body)
+        await Work.create({ ...body, createdBy: user })
 
         return { status: 200 }
     } catch (error) {
@@ -109,12 +109,101 @@ exports.createWork = async (body, user) => {
     }
 }
 
-exports.getWork = async (id, skip, limit) => {
+exports.getWork = async (id, skip, limit, search, user) => {
     try {
         if (!id) return { result: false, status: 400, message: 'Missing body' }
-        const data = await Work.find({ idClass: id }).sort({ updatedAt: -1 }).skip(skip).limit(limit).lean();
+
+        const query = {
+            idClass: id
+        };
+
+        if (search?.name) query.name = new RegExp(search?.name, 'i')
+
+        if (search?.startDate) query.hannop = {
+            $gte: moment(search?.startDate).startOf('days').toDate()
+        }
+
+        if (search?.endDate) query.hannop = {
+            $lte: moment(search?.endDate).endOf('days').toDate()
+        }
+
+        if (search?.startDate && search?.endDate) query.hannop = {
+            $lte: moment(search?.endDate).endOf('days').toDate(),
+            $gte: moment(search?.startDate).startOf('days').toDate()
+        }
+
+        if (search?.status) {
+            if (search.status === 'Còn hạn') {
+                query.hannop = {
+                    $gte: moment().startOf('days').toDate()
+                }
+            } else {
+                query.hannop = {
+                    $lt: moment().startOf('days').toDate()
+                }
+            }
+        }
+
+        const data = await Work.aggregate([
+            { $match: query },
+            { $sort: { updatedAt: -1 } },
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: 'requests',
+                    let: { idWork: { $toString: '$_id' }, idUser: { $toObjectId: user } },
+                    pipeline: [{
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ['$$idUser', '$idUser'] },
+                                    { $eq: ['$type', 'submitCode'] },
+                                    { $eq: ['$requestTo', '$$idWork'] },
+                                ]
+                            }
+                        }
+                    }],
+                    as: 'requests'
+                }
+            },
+            {
+                $project: {
+                    name: 1,
+                    content: 1,
+                    hannop: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    status: {
+                        $cond: {
+                            if: { $gt: [{ $size: "$requests" }, 0] },
+                            then: {
+                                $cond: {
+                                    if: { $lte: ['$requests.createdAt', '$hannop'] },
+                                    then: 'Đã nộp',
+                                    else: 'Quá hạn'
+                                }
+                            },
+                            else: 'Chưa nộp'
+                        }
+                    }
+                }
+            }
+        ])
+
         const count = await Work.countDocuments({ idClass: id })
         return { status: 200, data: { data, page: count / 10 + 1 } }
+    } catch (error) {
+        return errorServer(error)
+    }
+}
+
+exports.getDetailWork = async (id) => {
+    try {
+        if (!id) return { result: false, status: 400, message: 'Missing body' }
+        const data = await Work.findById(id).lean()
+        if (!data) return { statis: 404, message: 'Not found' }
+        return { status: 200, data: { data } }
     } catch (error) {
         return errorServer(error)
     }
@@ -154,6 +243,7 @@ exports.requestJoinClass = async (id, user) => {
         });
 
         const user = await User.findById(isClassExist.createdBy)
+
         sendMail(user?.email, "Có người dùng muốn tham gia vào lớp học của bạn")
 
         return { status: 200, message: 'Yêu cầu tham gia lớp học thành công' }
@@ -192,7 +282,7 @@ exports.getInfoClass = async (sid) => {
 
         const count = arrStudent.length;
 
-        const requestToClass = await RequestModel.aggregate([
+        const requestToClass = await Request.aggregate([
             { $match: { type: 'joinClass', requestTo: data.classId, status: 'pending' } },
             {
                 $lookup: {
@@ -264,6 +354,99 @@ exports.deleteJoinClass = async (sid, classId) => {
         sendMail(user?.email, `Bạn đã bị xoá khỏi lớp học ${classData.classId}!`)
 
         return { result: true, status: 200 }
+    } catch (error) {
+        return errorServer(error)
+    }
+}
+
+exports.getListStudentDoExcercise = async (sid, user, status) => {
+    try {
+        if (!sid) return { result: false, status: 400, message: 'Missing body' }
+
+        const dataWork = await Work.findById(sid).lean();
+        if (!dataWork) return { result: false, status: 404, message: 'Not found' }
+
+        if (dataWork.createdBy !== user) return { result: false, status: 404, message: 'Not found' }
+
+
+        const listUserInClass = await Class.findById(dataWork.idClass).lean();
+        if (!listUserInClass) return { result: false, status: 404, message: 'Not found' }
+
+        const studentInClass = listUserInClass.student.map(item => new ObjectId(item));
+
+        const pipeline = [
+            { $match: { _id: { $in: studentInClass } } },
+            {
+                $lookup: {
+                    from: 'requests',
+                    let: { idUser: '$_id' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ['$$idUser', '$idUser'] },
+                                        { $eq: ['$requestTo', sid] },
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: 'requests'
+                }
+            },
+            { $unwind: { path: '$requests', preserveNullAndEmptyArrays: true } },
+            {
+                $addFields: {
+                    requestExists: { $cond: { if: { $eq: ["$requests", null] }, then: false, else: true } }
+                }
+            }
+        ]
+
+        if (status === 'Chưa nộp') {
+            pipeline.push({ $match: { requestExists: false } })
+        } else if (status === 'Đã nộp') {
+            pipeline.push({ $match: { requestExists: true } })
+        } else if (status === 'Nộp muộn') {
+            pipeline.push({
+                $match: {
+                    requestExists: true,
+                    $expr: { $gte: ['$requests.createdAt', dataWork.hannop] }
+                }
+            })
+        }
+
+        pipeline.push({
+            $project: {
+                userName: 1,
+                createdAt: '$requests.createdAt',
+                point: '$requests.point',
+                status: {
+                    $cond: {
+                        if: { $eq: ["$requestExists", true] },
+                        then: {
+                            $cond: {
+                                if: { $lte: ['$requests.createdAt', dataWork.hannop] },
+                                then: 'Hoàn thành',
+                                else: 'Quá hạn'
+                            }
+                        },
+                        else: 'Chưa nộp'
+                    }
+                },
+                idRequest: 'requests._id'
+            }
+        })
+
+        const data = await User.aggregate(pipeline)
+
+        return {
+            result: true, status: 200,
+            data: {
+                data,
+                dataWork
+            }
+        }
     } catch (error) {
         return errorServer(error)
     }

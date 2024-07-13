@@ -9,6 +9,7 @@ import Login from '../pages/Login';
 import Home from "../pages/Home";
 import Class from "../pages/Class";
 import Excercise from "../pages/Excercise";
+import ListStudentDoExcercise from "../pages/ListStudentDoExcercise";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: "/Excercise/:id",
                 element: <Excercise />,
+            },
+            {
+                path: "/ListStudentDoExcercise/:id",
+                element: <ListStudentDoExcercise />,
             },
         ],
     },

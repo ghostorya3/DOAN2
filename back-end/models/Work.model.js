@@ -25,9 +25,9 @@ const workSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    user: {
-        type: [String],
-        default: []
+    createdBy: {
+        type: String,
+        required: true,
     }
 });
 const Work = mongoose.model('Work', workSchema);
