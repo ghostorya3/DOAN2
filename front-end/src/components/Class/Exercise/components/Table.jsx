@@ -15,6 +15,9 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from "react-router-dom";
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import ModalUpdateWork from '../../../Modals/ModalUpdateWork';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { POST } from '../../../common';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,13 +40,31 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables({ data, isTeacher, page }) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const [showModal, setShowModal] = React.useState(false)
+  const [idWork, setIdWork] = React.useState(false)
+  const queryClient = useQueryClient();
 
   const time = (hannop) => {
     if (moment().isBefore(moment(hannop)))
       return 'Còn hạn'
     else return 'hết hạn'
   }
+
+
+  const mutation = useMutation({
+    mutationFn: (data) => {
+      return POST('/class/deleteWork', data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['getWork'] });
+      toast('Success!')
+    },
+    onError: (error) => {
+      toast(error?.response?.data?.message);
+    },
+  });
+
   return (
     <div className='flex flex-col justify-center items-center gap-5'>
       <TableContainer component={Paper} className='mt-5'>
@@ -70,10 +91,13 @@ export default function CustomizedTables({ data, isTeacher, page }) {
                   {
                     isTeacher ? (<div className='flex gap-4 justify-center'>
                       <PlaylistAddCheckIcon fontSize='large' className='cursor-pointer text-green-500'
-                      onClick={() => navigate(`/ListStudentDoExcercise/${row._id}`)}
+                        onClick={() => navigate(`/ListStudentDoExcercise/${row._id}`)}
                       ></PlaylistAddCheckIcon>
-                      <EditIcon className='cursor-pointer text-yellow-500 mt-1'></EditIcon>
-                      <DeleteSharpIcon className='cursor-pointer text-red-500 mt-1' ></DeleteSharpIcon>
+                      <EditIcon className='cursor-pointer text-yellow-500 mt-1' onClick={() => {
+                        setIdWork(row._id)
+                        setShowModal(true)
+                      }}></EditIcon>
+                      <DeleteSharpIcon className='cursor-pointer text-red-500 mt-1' onClick={() => mutation.mutate({ id: row._id })} ></DeleteSharpIcon>
                     </div>) : (<>
                       {row.status === 'Chưa nộp' && <div className='cursor-pointer flex justify-center text-green-500 items-center'>
                         <MdOutlineArrowCircleUp className='cursor-pointer text-xl'></MdOutlineArrowCircleUp>
@@ -89,6 +113,7 @@ export default function CustomizedTables({ data, isTeacher, page }) {
         </Table>
 
       </TableContainer>
+      <ModalUpdateWork showModal={showModal} setShowModal={setShowModal} id={idWork}></ModalUpdateWork>
       <Stack spacing={2}>
         <Pagination count={page} color="primary" />
       </Stack>

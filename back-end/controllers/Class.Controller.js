@@ -28,6 +28,20 @@ exports.createWork = async (req, res) => {
     return handleResponse(res, data);
 }
 
+exports.updateWork = async (req, res) => {
+    const body = req.body;
+    const user = req.idUser;
+    const data = await classService.updateWork(body, user);
+    return handleResponse(res, data);
+}
+
+exports.deleteWork = async (req, res) => {
+    const body = req.body;
+    const user = req.idUser;
+    const data = await classService.deleteWork(body, user);
+    return handleResponse(res, data);
+}
+
 exports.getDetailWork = async (req, res) => {
     const { id } = req.body;
     const user = req.idUser;

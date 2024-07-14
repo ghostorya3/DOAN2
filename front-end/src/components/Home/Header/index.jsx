@@ -4,6 +4,9 @@ import AddIcon from "@mui/icons-material/Add";
 import Card from "../../Card/index";
 import { useState } from "react";
 import { Fab } from "@mui/material";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+
 export default function Header({
   classNamee,
   isClass,
@@ -13,6 +16,13 @@ export default function Header({
 }) {
   const { user } = useMyContext();
   const [openCard, setOpenCard] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    Cookies.remove('token_classroom')
+    Cookies.remove('_ga')
+    navigate('/Login');
+  }
   return (
     <div className="border p-2 flex items-center justify-between h-16">
       <div className="flex items-center">
@@ -53,7 +63,7 @@ export default function Header({
               attribute={"rounded-full"}
             ></Image>
           </div>
-          <div className="absolute group-hover:flex hidden top-12 right-2 border bg-slate-100 w-40 h-10  justify-center items-center rounded-md">
+          <div className="absolute group-hover:flex hidden top-10 cursor-pointer right-2 border bg-slate-100 w-40 h-10  justify-center items-center rounded-md" onClick={handleLogout}>
             Đăng xuất
           </div>
         </div>

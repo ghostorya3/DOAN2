@@ -113,6 +113,43 @@ exports.createWork = async (body, user) => {
     }
 }
 
+exports.updateWork = async (body, user) => {
+    try {
+        if (!body.name || !body.content || !body.hannop || !body.id)
+            return { result: false, status: 400, message: 'Missing body' }
+
+        const now = moment()
+
+        if (moment(body.hannop).isBefore(now)) {
+            return { result: false, status: 400, message: 'Invalid data' }
+        }
+
+        const _id = new ObjectId(body.id);
+
+        await Work.findOneAndUpdate({ _id: _id, createdBy: user }, {
+            ...body
+        })
+        return { status: 200 }
+    } catch (error) {
+        return errorServer(error)
+    }
+}
+
+exports.deleteWork = async (body, user) => {
+    try {
+        if (!body.id)
+            return { result: false, status: 400, message: 'Missing body' }
+
+        const _id = new ObjectId(body.id);
+
+        await Work.findOneAndDelete({ _id: _id, createdBy: user })
+        
+        return { status: 200 }
+    } catch (error) {
+        return errorServer(error)
+    }
+}
+
 exports.getWork = async (id, skip, limit, search, user) => {
     try {
         if (!id) return { result: false, status: 400, message: 'Missing body' }
