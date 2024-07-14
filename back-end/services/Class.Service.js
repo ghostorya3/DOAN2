@@ -8,6 +8,8 @@ const moment = require('moment');
 const { pipeline } = require("nodemailer/lib/xoauth2");
 const { createToken } = require("./Auth.Service");
 const XLSX = require('xlsx');
+const path = require('path');
+const fs = require('node:fs');
 
 exports.createClass = async (data) => {
     try {
@@ -361,7 +363,7 @@ exports.deleteJoinClass = async (sid, classId) => {
     }
 }
 
-exports.getListStudentDoExcercise = async (sid, user, status, isExport = true, res) => {
+exports.getListStudentDoExcercise = async (sid, user, status, isExport, res) => {
     try {
 
         if (!sid) return { result: false, status: 400, message: 'Missing body' }
@@ -390,6 +392,7 @@ exports.getListStudentDoExcercise = async (sid, user, status, isExport = true, r
                                     $and: [
                                         { $eq: ['$$idUser', '$idUser'] },
                                         { $eq: ['$requestTo', sid] },
+                                        { $eq: ['$type', 'submitCode'] },
                                     ]
                                 }
                             }
@@ -398,12 +401,13 @@ exports.getListStudentDoExcercise = async (sid, user, status, isExport = true, r
                     as: 'requests'
                 }
             },
-            { $unwind: { path: '$requests', preserveNullAndEmptyArrays: true } },
             {
                 $addFields: {
-                    requestExists: { $cond: { if: { $eq: ["$requests", null] }, then: false, else: true } }
+                    requestExists: { $cond: { if: { $or: [{ $eq: ["$requests", null] }, { $eq: [{ $size: "$requests" }, 0] }] }, then: false, else: true } }
                 }
-            }
+            },
+            { $unwind: { path: '$requests', preserveNullAndEmptyArrays: true } },
+
         ]
 
         if (status === 'Chưa nộp') {
@@ -473,16 +477,17 @@ exports.getListStudentDoExcercise = async (sid, user, status, isExport = true, r
             const worksheet = XLSX.utils.json_to_sheet(data);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-            const url = `data/report/report_${new Date().getTime()}.xlsx`;
-            await XLSX.writeFile(workbook, url);
-            return res.download(`${url}`, (err, data) => {
-                if (err) {
-                    console.error(err);
-                    res.status(500).send('Có lỗi xảy ra khi tải xuống tệp.');
-                } else {
-                    console.log(`Tệp đã được tạo và tải xuống thành công tại: ${url}`);
+            const fileName = `report_${new Date().getTime()}.xlsx`;
+            const filePath = path.join('data', 'report', fileName);
+
+            await XLSX.writeFile(workbook, filePath);
+
+            return {
+                status: 200, data: {
+                    url: fileName
                 }
-            });
+            }
+
         }
         return {
             result: true, status: 200,

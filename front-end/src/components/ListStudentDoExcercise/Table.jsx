@@ -107,23 +107,25 @@ export default function CustomizedTables({ data, setIdRequest, setShowModal }) {
                   scope="row"
                   style={{ width: "20%", textAlign: "center" }}
                 >
-                  <div className="flex gap-5 justify-center">
-                    <div
-                      className="hover:text-blue-500 font-normal text-base cursor-pointer"
-                      onClick={() => handleViewCode(row._id, row.idWork)}
-                    >
-                      Xem code
+                  {row.status !== "Chưa nộp" && (
+                    <div className="flex gap-5 justify-center">
+                      <div
+                        className="hover:text-blue-500 font-normal text-base cursor-pointer"
+                        onClick={() => handleViewCode(row._id, row.idWork)}
+                      >
+                        Xem code
+                      </div>
+                      <div
+                        className="hover:text-blue-500 font-normal text-base cursor-pointer"
+                        onClick={() => {
+                          setIdRequest(row.idRequest);
+                          setShowModal(true);
+                        }}
+                      >
+                        Chấm điểm
+                      </div>
                     </div>
-                    <div
-                      className="hover:text-blue-500 font-normal text-base cursor-pointer"
-                      onClick={() => {
-                        setIdRequest(row.idRequest);
-                        setShowModal(true);
-                      }}
-                    >
-                      Chấm điểm
-                    </div>
-                  </div>
+                  )}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
